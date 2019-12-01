@@ -1,0 +1,13 @@
+{
+  "name": "backend-ebay-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "queue": "nodemon src/queue.js"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  }
+}
