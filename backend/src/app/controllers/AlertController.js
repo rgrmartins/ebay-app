@@ -30,9 +30,9 @@ class AlertController {
     }
 
     // save search and trigger API and email
-    // const search = await Alert.
+    const search = await Alert.create(req.body);
 
-    return res.json();
+    return res.json(search);
   }
 }
 
