@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import CronJob from 'cron';
 import Alert from '../schemas/Alert';
 
 class AlertController {
@@ -29,10 +30,30 @@ class AlertController {
         .json({ error: 'This survey has already been created by this email.' });
     }
 
-    // save search and trigger API and email
-    const search = await Alert.create(req.body);
+    const { name, search_phrase, email, research_time } = req.body;
 
-    return res.json(search);
+    // save search and trigger API and email
+    await Alert.create(name, search_phrase, email, research_time);
+
+    // Create a new CronJob
+    const job = new CronJob(
+      `*/${research_time} * * * *`,
+      () => {
+        console.log(`Running a new CronJob for ${search_phrase}`);
+        // Aqui chamará a API e fará a busca dos produtos e retornará os 3 mais baratos
+      },
+      null,
+      true,
+      'America/Sao_paulo'
+    );
+
+    return res.json(job);
+  }
+
+  async index(req, res) {
+    return res.json({
+      teste: 'TESTE',
+    });
   }
 }
 
