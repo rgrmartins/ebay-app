@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import CronJob from 'cron';
+var CronJob = require('cron').CronJob;
 import Alert from '../schemas/Alert';
 
 class AlertController {
@@ -33,21 +33,26 @@ class AlertController {
     const { name, search_phrase, email, research_time } = req.body;
 
     // save search and trigger API and email
-    await Alert.create(name, search_phrase, email, research_time);
+    const alert = await Alert.create({
+      name,
+      search_phrase,
+      email,
+      research_time,
+    });
 
     // Create a new CronJob
     const job = new CronJob(
       `*/${research_time} * * * *`,
-      () => {
+      function() {
         console.log(`Running a new CronJob for ${search_phrase}`);
         // Aqui chamará a API e fará a busca dos produtos e retornará os 3 mais baratos
       },
       null,
       true,
-      'America/Sao_paulo'
+      'America/Sao_Paulo'
     );
 
-    return res.json(job);
+    return res.json(alert);
   }
 
   async index(req, res) {
