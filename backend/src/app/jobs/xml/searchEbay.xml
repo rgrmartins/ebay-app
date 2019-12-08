@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<findCompletedItemsRequest xmlns="http://www.ebay.com/marketplace/search/v1/services">
+   <keywords>pass</keywords>
+   <sortOrder>PricePlusShippingLowest</sortOrder>
+   <paginationInput>
+      <entriesPerPage>3</entriesPerPage>
+      <pageNumber>1</pageNumber>
+   </paginationInput>
+</findCompletedItemsRequest>

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-var CronJob = require('cron').CronJob;
+import { addJob } from '../jobs/cron';
 import Alert from '../schemas/Alert';
 
 class AlertController {
@@ -21,7 +21,7 @@ class AlertController {
 
     // checking if search already exists for this email
     const checkSearchExists = await Alert.findOne({
-      where: { email: req.body.email, searc_phrase: req.body.search_phrase },
+      where: { email: req.body.email, search_phrase: req.body.search_phrase },
     });
 
     if (checkSearchExists) {
@@ -41,16 +41,7 @@ class AlertController {
     });
 
     // Create a new CronJob
-    const job = new CronJob(
-      `*/${research_time} * * * *`,
-      function() {
-        console.log(`Running a new CronJob for ${search_phrase}`);
-        // Aqui chamará a API e fará a busca dos produtos e retornará os 3 mais baratos
-      },
-      null,
-      true,
-      'America/Sao_Paulo'
-    );
+    addJob(alert);
 
     return res.json(alert);
   }
