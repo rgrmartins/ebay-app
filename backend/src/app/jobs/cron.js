@@ -6,7 +6,7 @@ const jobs = {};
 export const addJob = data => {
   const { _id: id, research_time, search_phrase } = data;
   const cronJob = new CronJob(
-    `*/${research_time}  * * * *`,
+    `*/${research_time}  * * * * *`,
     () => {
       searchOnEbay(search_phrase);
     },
