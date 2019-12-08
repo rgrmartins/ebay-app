@@ -1,6 +1,7 @@
 import soapRequest from 'easy-soap-request';
 import xml2js, { parseString } from 'xml2js';
-import alertMail from './AlertMail';
+import Queue from '../../lib/Queue';
+import AlertMail from './AlertMail';
 
 const url = process.env.EBAY_SERVICE_URL;
 const sampleHeaders = {
@@ -9,7 +10,8 @@ const sampleHeaders = {
 };
 
 // Usage of Module
-const searchOnEbay = async search_phrase => {
+const searchOnEbay = async alert => {
+  const { name, email, search_phrase } = alert;
   const ebayMold = {
     findCompletedItemsRequest: {
       $: {
@@ -34,7 +36,7 @@ const searchOnEbay = async search_phrase => {
   });
   const { body } = response;
 
-  const productsFinal = [];
+  let productsFinal = [];
 
   parseString(
     body,
@@ -48,35 +50,47 @@ const searchOnEbay = async search_phrase => {
     },
     (err, result) => {
       const mapEbay = result.findCompletedItemsResponse.child.searchResult;
-      mapEbay.map(products => {
+      mapEbay.forEach(products => {
         const listProducts = products;
         const { count } = listProducts.ebay;
-        console.log(`COUNT: ${count}`);
-
-        const mapItem = listProducts.child.item;
-        mapItem.map(item => {
-          const product = item;
-          const { title, viewItemURL } = product.child;
-          const price = product.child.sellingStatus;
-          let finalValue;
-          price.map(prices => {
-            const unity = prices;
-            const coins = unity.child.currentPrice;
-            coins.map(coin => {
-              const real = coin;
-              const dolar = real.ebay.currencyId;
-              const value = real._;
-              finalValue = dolar + value;
+        if (count == 0) {
+          productsFinal = null;
+        } else {
+          const mapItem = listProducts.child.item;
+          mapItem.forEach(item => {
+            const product = item;
+            const { title, viewItemURL } = product.child;
+            const price = product.child.sellingStatus;
+            let finalValue;
+            price.forEach(prices => {
+              const unity = prices;
+              const coins = unity.child.currentPrice;
+              coins.forEach(coin => {
+                const real = coin;
+                const dolar = real.ebay.currencyId;
+                const value = real._;
+                finalValue = `${dolar} ${value}`;
+              });
             });
+            // send email with collected data
+            const finalProduct = {
+              title,
+              finalValue,
+              viewItemURL,
+            };
+            productsFinal.push(finalProduct);
           });
-          // Disparar email com os dados coletado
-          console.log(`TITLE: ${title}`);
-          console.log(`PRICE: ${finalValue}`);
-          return console.log(`LINK: ${viewItemURL}`);
-        });
+        }
       });
     }
   );
+  console.log(`ENVIANDO EMAIL: ${email}, para ${name}`);
+  await Queue.add(AlertMail.key, {
+    name,
+    email,
+    search_phrase,
+    productsFinal,
+  });
 };
 
 export default searchOnEbay;

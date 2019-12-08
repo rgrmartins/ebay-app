@@ -2,9 +2,10 @@
  * Configuração da fila de processamento do Redis com Bee Queue,
  */
 import Bee from 'bee-queue';
+import AlertMail from '../app/jobs/AlertMail';
 import redisConfig from '../config/redis';
 
-const jobs = [];
+const jobs = [AlertMail];
 
 class Queue {
   constructor() {

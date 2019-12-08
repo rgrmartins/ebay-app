@@ -6,15 +6,17 @@ class AlertMail {
   }
 
   async handle({ data }) {
-    const { name, email } = data;
-
+    const { name, email, productsFinal, search_phrase } = data;
     // Sending Email to Customer
     await Mail.sendMail({
       to: `${name} <${email}>`,
       subject: 'New survey performed',
       template: 'products',
       context: {
-        Client: name,
+        client: name,
+        email,
+        phrase: search_phrase,
+        products: productsFinal,
       },
     });
   }

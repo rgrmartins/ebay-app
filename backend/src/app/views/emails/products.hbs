@@ -1,3 +1,22 @@
 <strong>Olá, {{ name }}</strong>
-<p>Temos uma nova pesquisa do alerta criado.</p>
+<p>Temos uma nova pesquisa do alerta criado para o e-email: <strong>{{ email }}.</strong></p>
+<p>A frase de pesquisa foi: <strong>{{ phrase }}</strong></p>
 <p>Segue os 3 produtos com menor preço pesquisado:</p>
+{{#if products}}
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Price</th>
+    <th>URL</th>
+  </tr>
+  {{#each products }}
+    <tr>
+      <td>{{ title }}</td>
+      <td>{{ finalValue }}</td>
+      <td>{{ viewItemURL }}</td>
+    </tr>
+  {{/each}}
+</table>
+{{else}}
+  <h3>A Pesquisa realizada não retornou nenhum produto</h3>
+{{/if}}

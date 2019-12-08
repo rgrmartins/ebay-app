@@ -3,12 +3,12 @@ import searchOnEbay from './searchOnEbay';
 
 const jobs = {};
 
-export const addJob = data => {
-  const { _id: id, research_time, search_phrase } = data;
+export const addJob = alert => {
+  const { _id: id, research_time } = alert;
   const cronJob = new CronJob(
-    `*/${research_time}  * * * * *`,
+    `*/${research_time}  * * * *`,
     () => {
-      searchOnEbay(search_phrase);
+      searchOnEbay(alert);
     },
     null,
     true,
