@@ -48,11 +48,7 @@ class AlertController {
   }
 
   async index(req, res) {
-    const { page = 1 } = req.query;
-    const alerts = await Alert.find()
-      .sort({ createdAt: 'desc' })
-      .limit(20)
-      .skip((page - 1) * 20);
+    const alerts = await Alert.find().sort({ createdAt: 'desc' });
 
     return res.json(alerts);
   }

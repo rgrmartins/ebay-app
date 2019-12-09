@@ -1,29 +1,89 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FaEbay, FaPlus, FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { Form, Input } from '@rocketseat/unform';
-import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+import api from '../../services/api';
+import { Container } from '../../components/Container';
 
-const schema = Yup.object().shape({
-  name: Yup.string().required('O Nome é um campo obrigatório.'),
-  email: Yup.string()
-    .email('Insira um e-mail válido.')
-    .required('O e-mail é um campo obrigatório'),
-});
+import { Form, SubmitButton } from './styles';
 
-export default function Alert() {
-  function handleSubmit(data) {
-    console.log(data);
+function Alerts() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [searchPhrase, setSearchPhrase] = useState('');
+  const [researchTime, setResearchTime] = useState('');
+
+  async function handleAddAlert() {
+    api
+      .post('/alerts', {
+        name,
+        email,
+        search_phrase: searchPhrase,
+        research_time: researchTime,
+      })
+      .then(() => {
+        toast.success(
+          'Alerta criado com sucesso, em breve receberá e-mails com os produtos pesquisados'
+        );
+      })
+      .catch(err => {
+        toast.error(`Erro ao tentar criar um novo Alerta: ${err}`);
+      });
+
+    setName('');
+    setEmail('');
+    setSearchPhrase('');
+    setResearchTime('');
   }
 
   return (
-    <>
-      <Form schema={schema} onSubmit={handleSubmit}>
-        <Input name="name" type="text" placeholder="Seu nome" />
-        <Input name="email" type="email" placeholder="Seu e-mail" />
+    <Container>
+      <h1>
+        <FaEbay />
+        Alertas
+      </h1>
 
-        <button type="submit">Criar Alerta</button>
-        <Link to="/alerts">Listar todos os Alertas criados</Link>
+      <Form>
+        <input
+          title="name"
+          placeholder="Digite Nome"
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
+        <input
+          placeholder="Digite E-mail"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          placeholder="Pesquise o que quiser"
+          value={searchPhrase}
+          onChange={e => setSearchPhrase(e.target.value)}
+        />
+        <br />
+        <h4>Tempo de pesquisa e envio de e-mail</h4>
+        <select
+          value={researchTime}
+          onChange={e => setResearchTime(e.target.value)}
+        >
+          <option>Selecione o tempo desejado</option>
+          <option value="2">2 Minutos</option>
+          <option value="10">10 Minutos</option>
+          <option value="30">30 Minutos</option>
+        </select>
+
+        <SubmitButton onClick={handleAddAlert}>
+          <FaPlus color="#FFF" size={14} />
+        </SubmitButton>
       </Form>
-    </>
+      <br />
+      <br />
+      <h3>
+        <FaArrowRight />
+        <Link to="/alerts">Todos os alertas criados</Link>
+      </h3>
+    </Container>
   );
 }
+
+export default Alerts;

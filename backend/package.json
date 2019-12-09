@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "bee-queue": "^1.2.2",
+    "cors": "^2.8.5",
     "cron": "^1.7.2",
     "date-fns": "^2.8.1",
     "dotenv": "^8.2.0",

@@ -3,6 +3,7 @@ import express from 'express';
 import 'express-async-errors';
 import Youch from 'youch';
 import morgan from 'morgan';
+import cors from 'cors';
 import routes from './routes';
 
 import './database';
@@ -20,6 +21,7 @@ class App {
   middlewares() {
     this.server.use(express.json());
     this.server.use(morgan('combined'));
+    this.server.use(cors());
   }
 
   routes() {
