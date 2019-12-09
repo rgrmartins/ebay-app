@@ -15,7 +15,6 @@ export const addJob = alert => {
     'America/Sao_Paulo'
   );
   jobs[id] = cronJob;
-  console.log(`JOBS ======> ${jobs}`);
 };
 
 export const removeJob = id => {

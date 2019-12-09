@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { addJob } from '../jobs/cron';
+import { addJob, removeJob } from '../jobs/cron';
 import Alert from '../schemas/Alert';
 
 class AlertController {
@@ -21,7 +21,8 @@ class AlertController {
 
     // checking if search already exists for this email
     const checkSearchExists = await Alert.findOne({
-      where: { email: req.body.email, search_phrase: req.body.search_phrase },
+      email: req.body.email,
+      search_phrase: req.body.search_phrase,
     });
 
     if (checkSearchExists) {
@@ -47,9 +48,44 @@ class AlertController {
   }
 
   async index(req, res) {
-    return res.json({
-      teste: 'TESTE',
+    const { page = 1 } = req.query;
+    const alerts = await Alert.find()
+      .sort({ createdAt: 'desc' })
+      .limit(20)
+      .skip((page - 1) * 20);
+
+    return res.json(alerts);
+  }
+
+  async delete(req, res) {
+    const alert = await Alert.findByIdAndDelete(req.params.id);
+    removeJob(alert);
+    return res.json(alert);
+  }
+
+  async update(req, res) {
+    // input validation
+    const schema = Yup.object().shape({
+      name: Yup.string(),
+      search_phrase: Yup.string(),
+      email: Yup.string().email(),
+      research_time: Yup.number(),
     });
+
+    // input validation
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation Fails.' });
+    }
+
+    const { name, search_phrase, email, research_time } = req.body;
+
+    const alerts = await Alert.findByIdAndUpdate(req.params.id, {
+      name,
+      search_phrase,
+      email,
+      research_time,
+    });
+    return res.json(alerts);
   }
 }
 
