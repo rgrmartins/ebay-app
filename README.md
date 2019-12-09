@@ -29,7 +29,6 @@ A aplicação está utilizando containers docker para os banco de dados mongoDB 
 - Listagem de todos os alertas criados.
 
 # Passos para subir a aplicação
-
 - Clonar este projeto do GitHub (https://github.com/rgrmartins/ebay-app.git);
 - Na máquina em que o projeto foi clonado é necessário ter o NodeJS instalado;
 - No terminal da maquina em que o projeto foi clonado é necessário instalar as dependencias (recomendo usar Yarn) $ yarn;
@@ -41,6 +40,7 @@ A aplicação está utilizando containers docker para os banco de dados mongoDB 
 - As APIs do eBay são praticamente todas baseadas em XML, para realizar as pesquisas necessárias precisamos realizar muitas conversões JSON <-> XML;
 - As APIs de developers tem diversas funções, utilizamos somente a Finding API. Sempre é bom observar as licença e aos Termos da API do eBay para usar esta biblioteca;
 - o XML utilizado para enviar requisições a API do Ebay deverá conter os seguintes atributos: method da requisição, xmls, keywords, sortOrder(Opicional) e pagination (Opicional);
+- Umas das formas de se testar a API desenvolvida, antes do desenvolvimento do frontend foi o Insomina, um client para testar API Rest. ( https://insomnia.rest/ );
 - Em ambiente de desenvolvimento foi uitilizado como gerenciador de e-mail, a aplicação MailTrap, todos os emails disparados pela apliacação cai em sua api, onde podemos visualizar o layout aplicado, as informações buscadas. É necessário realizar o cadastro na aplicação deles através da url ( https://mailtrap.io/ );
 - Com os containers dos bancos rodando, variáveis de ambiente configuradas é possível subir as aplicações, rodando os seguintes scripts no terminal:
 	-No diretório do Backend: $ yarn dev (levanta a aplicação);
